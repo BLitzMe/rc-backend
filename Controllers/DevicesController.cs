@@ -101,6 +101,17 @@ namespace RepairConsole.Controllers
             return CreatedAtAction(nameof(GetRepairDevice), new {id = device.Id}, device);
         }
 
+        [HttpGet("repairdevices")]
+        public IActionResult GetAllRepairDevices()
+        {
+            var devices = _repairDeviceRepository.GetAllRepairDevices();
+            
+            if (devices == null || devices.Count < 1)
+                return NotFound();
+
+            return Ok(devices);
+        }
+
         [HttpPatch("{userDeviceId}/setRepairDevice")]
         public IActionResult SetRepairDevice([FromRoute] int userDeviceId, [FromQuery] int id)
         {
