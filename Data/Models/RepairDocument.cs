@@ -6,9 +6,9 @@ namespace RepairConsole.Data.Models
     {
         public int Id { get; set; }
 
-        public string Uri { get; set; }
-
         public int RepairDeviceId { get; set; }
+
+        public string FileName { get; set; }
 
         [NotMapped]
         public RepairDevice RepairDevice { get; set; }

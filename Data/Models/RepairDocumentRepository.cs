@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace RepairConsole.Data.Models
 {
@@ -27,6 +28,13 @@ namespace RepairConsole.Data.Models
             _context.RepairDocuments.Add(document);
             _context.SaveChanges();
             return document;
+        }
+
+        public async Task<ICollection<RepairDocument>> AddMultipleRepairDocumentsAsync(ICollection<RepairDocument> documents)
+        {
+            await _context.RepairDocuments.AddRangeAsync(documents);
+            await _context.SaveChangesAsync();
+            return documents;
         }
     }
 }

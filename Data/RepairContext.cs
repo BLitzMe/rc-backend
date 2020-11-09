@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using RepairConsole.Data.Models;
 
-namespace RepairConsole.Data.Models
+namespace RepairConsole.Data
 {
     public class RepairContext : DbContext
     {

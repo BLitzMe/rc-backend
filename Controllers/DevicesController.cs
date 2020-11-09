@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
-using Hangfire;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using RepairConsole.Data.Models;
@@ -78,40 +77,6 @@ namespace RepairConsole.Controllers
             return Ok(devices);
         }
 
-        //[HttpGet]
-
-        [HttpGet("repairdevice/{id}")]
-        public IActionResult GetRepairDevice([FromRoute] int id)
-        {
-            var device = _repairDeviceRepository.GetRepairDevice(id);
-
-            if (device == null)
-                return NotFound();
-
-            return Ok(device);
-        }
-
-        [HttpPost("repairdevice")]
-        public IActionResult PostRepairDevice([FromBody] RepairDevice device)
-        {
-            if (device == null)
-                return BadRequest();
-
-            device = _repairDeviceRepository.AddRepairDevice(device);
-            return CreatedAtAction(nameof(GetRepairDevice), new {id = device.Id}, device);
-        }
-
-        [HttpGet("repairdevices")]
-        public IActionResult GetAllRepairDevices()
-        {
-            var devices = _repairDeviceRepository.GetAllRepairDevices();
-            
-            if (devices == null || devices.Count < 1)
-                return NotFound();
-
-            return Ok(devices);
-        }
-
         [HttpPatch("{userDeviceId}/setRepairDevice")]
         public IActionResult SetRepairDevice([FromRoute] int userDeviceId, [FromQuery] int id)
         {
@@ -128,7 +93,7 @@ namespace RepairConsole.Controllers
             userDevice.RepairDevice = repairDevice;
             userDevice = _userDeviceRepository.UpdateUserDevice(userDevice);
 
-            return Ok();
+            return Ok(userDevice);
         }
     }
 }

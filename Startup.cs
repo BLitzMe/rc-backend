@@ -8,7 +8,9 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.EntityFrameworkCore;
+using RepairConsole.Data;
 using RepairConsole.Data.Models;
+using RepairConsole.Services;
 
 namespace RepairConsole
 {
@@ -32,6 +34,12 @@ namespace RepairConsole
             {
                 configuration.RootPath = "ClientApp/build";
             });
+            
+            services.AddCors(options =>
+            {
+                options.AddPolicy("AllowAllOrigins",
+                    builder => builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
+            });
 
             services.AddHangfire(config => { config.UseMemoryStorage(); });
             services.AddDbContextPool<RepairContext>(opt => opt.UseInMemoryDatabase(Guid.NewGuid().ToString()));
@@ -42,6 +50,7 @@ namespace RepairConsole
             services.AddTransient<IUserDeviceRepository, UserDeviceRepository>();
             services.AddTransient<IRepairDeviceRepository, RepairDeviceRepository>();
             services.AddTransient<IRepairDocumentRepository, RepairDocumentRepository>();
+            services.AddTransient<FileService, FileService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -58,6 +67,8 @@ namespace RepairConsole
                 app.UseHsts();
             }
 
+            app.UseCors("AllowAllOrigins");
+            
             app.UseHttpsRedirection();
             app.UseStaticFiles();
             app.UseSpaStaticFiles();
