@@ -46,9 +46,9 @@ namespace RepairConsole.Controllers
         }
 
         [HttpGet()]
-        public IActionResult GetAllRepairDevices()
+        public async Task<IActionResult> GetAllRepairDevices()
         {
-            var devices = _repairDeviceRepository.GetAllRepairDevices();
+            var devices = await _repairDeviceRepository.GetAllRepairDevices();
 
             if (devices == null || devices.Count < 1)
                 return NotFound();
@@ -62,7 +62,7 @@ namespace RepairConsole.Controllers
             if (files == null || files.Count == 0)
                 return BadRequest(new { message = "No files attached" });
 
-            var repairDevice = _repairDeviceRepository.GetRepairDevice(repairDeviceId);
+            var repairDevice = await _repairDeviceRepository.GetRepairDevice(repairDeviceId);
             if (repairDevice == null)
                 return NotFound();
 

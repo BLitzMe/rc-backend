@@ -12,10 +12,13 @@ namespace RepairConsole.Data.Models
         public string Notes { get; set; }
 
         [NotMapped]
-        public List<RepairDocument> Documents { get; set; }
+        public ICollection<RepairDocument> Documents { get; set; }
 
         [NotMapped]
-        public List<UserDevice> UserDevices { get; set; }
+        public ICollection<UserDevice> UserDevices { get; set; }
+
+        [NotMapped]
+        public ICollection<Link> Links { get; set; }
 
         public bool ShouldSerializeUserDevices() => false;
     }

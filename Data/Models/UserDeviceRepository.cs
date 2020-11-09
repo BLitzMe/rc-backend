@@ -24,7 +24,10 @@ namespace RepairConsole.Data.Models
         public ICollection<UserDevice> GetAllUserDevices()
         {
             var devices = _repairContext.UserDevices.ToList();
-            var repairDevices = _repairContext.RepairDevices.ToList();
+            var repairDevices = _repairContext.RepairDevices.Include(d => d.Documents)
+                .Include(d => d.Links)
+                .ThenInclude(l => l.Ratings)
+                .ToList();
 
             foreach (var repairDevice in repairDevices)
             {

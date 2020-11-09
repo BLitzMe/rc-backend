@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace RepairConsole.Data.Models
@@ -13,14 +14,26 @@ namespace RepairConsole.Data.Models
             _context = context;
         }
 
-        public RepairDevice GetRepairDevice(int id)
+        public async Task<RepairDevice> GetRepairDevice(int id)
         {
-            return _context.RepairDevices.Find(id);
+            var device = await _context.RepairDevices
+                .Include(dev => dev.Documents)
+                .Include(dev => dev.Links)
+                .ThenInclude(link => link.Ratings)
+                .FirstAsync(dev => dev.Id == id);
+
+            return device;
         }
 
-        public ICollection<RepairDevice> GetAllRepairDevices()
+        public async Task<ICollection<RepairDevice>> GetAllRepairDevices()
         {
-            return _context.RepairDevices.ToList();
+            var devices = await _context.RepairDevices
+                .Include(dev => dev.Documents)
+                .Include(dev => dev.Links)
+                .ThenInclude(link => link.Ratings)
+                .ToListAsync();
+
+            return devices;
         }
 
         public RepairDevice AddRepairDevice(RepairDevice repairDevice)

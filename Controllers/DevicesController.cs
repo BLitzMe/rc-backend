@@ -78,14 +78,14 @@ namespace RepairConsole.Controllers
         }
 
         [HttpPatch("{userDeviceId}/setRepairDevice")]
-        public IActionResult SetRepairDevice([FromRoute] int userDeviceId, [FromQuery] int id)
+        public async Task<IActionResult> SetRepairDevice([FromRoute] int userDeviceId, [FromQuery] int id)
         {
             var userDevice = _userDeviceRepository.GetAllUserDevices()
                 .FirstOrDefault(d => d.Id == userDeviceId);
             if (userDevice == null)
                 return NotFound(new {message = $"User device with id {userDeviceId} not found"});
 
-            var repairDevice = _repairDeviceRepository.GetRepairDevice(id);
+            var repairDevice = await _repairDeviceRepository.GetRepairDevice(id);
             if (repairDevice == null)
                 return NotFound(new {message = $"Repair device with id {id} not found"});
 

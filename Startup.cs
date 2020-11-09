@@ -50,6 +50,7 @@ namespace RepairConsole
             services.AddTransient<IUserDeviceRepository, UserDeviceRepository>();
             services.AddTransient<IRepairDeviceRepository, RepairDeviceRepository>();
             services.AddTransient<IRepairDocumentRepository, RepairDocumentRepository>();
+            services.AddTransient<ILinkRepository, LinkRepository>();
             services.AddTransient<FileService, FileService>();
         }
 
