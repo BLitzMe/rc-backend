@@ -45,11 +45,7 @@ namespace RepairConsole.Data.Models
 
         public async Task<Link> GetLinkByIdAsync(int id)
         {
-            var link = await _context.Links.Include(l => l.Ratings).FirstOrDefaultAsync();
-            if (link == null)
-                return null;
-
-            return link;
+            return await _context.Links.Include(l => l.Ratings).FirstOrDefaultAsync();
         }
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 
 namespace RepairConsole.Data.Models
 {
@@ -15,12 +16,12 @@ namespace RepairConsole.Data.Models
 
         public RepairDocument GetRepairDocument(int id)
         {
-            return _context.RepairDocuments.Find(id);
+            return _context.RepairDocuments.Where(d => d.Id ==id).Include(d => d.Ratings).FirstOrDefault();
         }
 
         public ICollection<RepairDocument> GetAllRepairDocuments()
         {
-            return _context.RepairDocuments.ToList();
+            return _context.RepairDocuments.Include(d => d.Ratings).ToList();
         }
 
         public RepairDocument AddRepairDocument(RepairDocument document)
@@ -35,6 +36,22 @@ namespace RepairConsole.Data.Models
             await _context.RepairDocuments.AddRangeAsync(documents);
             await _context.SaveChangesAsync();
             return documents;
+        }
+
+        public async Task<RepairDocument> AddRatingAsync(int docId, int rating)
+        {
+            await _context.DocumentRatings.AddAsync(new DocumentRating
+            {
+                DocumentId = docId,
+                Value = rating
+            });
+            await _context.SaveChangesAsync();
+
+            var doc = await _context.RepairDocuments
+                .Include(d => d.Ratings)
+                .FirstAsync(d => d.Id == docId);
+
+            return doc;
         }
     }
 }

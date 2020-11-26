@@ -9,5 +9,6 @@ namespace RepairConsole.Data.Models
         ICollection<RepairDocument> GetAllRepairDocuments();
         RepairDocument AddRepairDocument(RepairDocument document);
         Task<ICollection<RepairDocument>> AddMultipleRepairDocumentsAsync(ICollection<RepairDocument> documents);
+        Task<RepairDocument> AddRatingAsync(int docId, int rating);
     }
 }

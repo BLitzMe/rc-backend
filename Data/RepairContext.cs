@@ -9,7 +9,10 @@ namespace RepairConsole.Data
         public DbSet<RepairDevice> RepairDevices { get; set; }
         public DbSet<RepairDocument> RepairDocuments { get; set; }
         public DbSet<Link> Links { get; set; }
+
+        public DbSet<Rating> Ratings { get; set; }
         public DbSet<LinkRating> LinkRatings { get; set; }
+        public DbSet<DocumentRating> DocumentRatings { get; set; }
 
         public RepairContext(DbContextOptions<RepairContext> options) : base(options)
         {

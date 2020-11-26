@@ -97,5 +97,18 @@ namespace RepairConsole.Controllers
 
             return file;
         }
+
+        [HttpPost("file/{id}/rating")]
+        public async Task<IActionResult> AddDocumentRating([FromRoute] int id, [FromQuery] int value)
+        {
+            if (value < 1 || value > 5)
+                return BadRequest(new { message = "Values for rating must range from 1 to 5" });
+
+            var link = _repairDocumentRepository.GetRepairDocument(id);
+            if (link == null)
+                return NotFound();
+
+            return Ok(await _repairDocumentRepository.AddRatingAsync(id, value));
+        }
     }
 }
