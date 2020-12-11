@@ -26,6 +26,8 @@ namespace RepairConsole.Data.Models
 
         public DateTime? DeliveryDay { get; set; }
 
+        public TimeSpan? TimeTaken { get; set; }
+
         public int RepairDeviceId { get; set; }
         public RepairDevice RepairDevice { get; set; }
     }

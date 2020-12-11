@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
@@ -17,10 +18,26 @@ namespace RepairConsole.Data.Models
         public async Task<RepairDevice> GetRepairDevice(int id)
         {
             var device = await _context.RepairDevices
+                .Include(dev => dev.UserDevices)
                 .Include(dev => dev.Documents)
                 .Include(dev => dev.Links)
                 .ThenInclude(link => link.Ratings)
                 .FirstAsync(dev => dev.Id == id);
+
+            device.AverageTimeTaken = TimeSpan.Zero;
+            device.UserDevices ??= new List<UserDevice>();
+            var num = 0;
+            foreach (var userDevice in device.UserDevices)
+            {
+                if (!userDevice.TimeTaken.HasValue)
+                    continue;
+
+                device.AverageTimeTaken += userDevice.TimeTaken;
+                num++;
+            }
+
+            if (num > 0)
+                device.AverageTimeTaken /= num;
 
             return device;
         }

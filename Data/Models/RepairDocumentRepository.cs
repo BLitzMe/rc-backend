@@ -16,7 +16,14 @@ namespace RepairConsole.Data.Models
 
         public RepairDocument GetRepairDocument(int id)
         {
-            return _context.RepairDocuments.Where(d => d.Id ==id).Include(d => d.Ratings).FirstOrDefault();
+            var doc = _context.RepairDocuments.FirstOrDefault(d => d.Id == id);
+            if (doc == null)
+                return null;
+
+            var ratings = _context.DocumentRatings.Where(r => r.DocumentId == doc.Id).ToList();
+            doc.Ratings = ratings;
+
+            return doc;
         }
 
         public ICollection<RepairDocument> GetAllRepairDocuments()

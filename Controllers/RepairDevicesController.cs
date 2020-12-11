@@ -25,9 +25,9 @@ namespace RepairConsole.Controllers
         }
 
         [HttpGet("{id}")]
-        public IActionResult GetRepairDevice([FromRoute] int id)
+        public async Task<IActionResult> GetRepairDevice([FromRoute] int id)
         {
-            var device = _repairDeviceRepository.GetRepairDevice(id);
+            var device = await _repairDeviceRepository.GetRepairDevice(id);
 
             if (device == null)
                 return NotFound();

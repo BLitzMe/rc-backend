@@ -95,5 +95,22 @@ namespace RepairConsole.Controllers
 
             return Ok(userDevice);
         }
+
+        [HttpPatch("{userDeviceId}/setTimeTaken")]
+        public IActionResult SetTimeTaken([FromRoute] int userDeviceId, [FromQuery] TimeSpan timeSpan)
+        {
+            var device = _userDeviceRepository.GetAllUserDevices()
+                .FirstOrDefault(d => d.Id == userDeviceId);
+            if (device == null)
+                return NotFound(new {message = "Device unknown"});
+
+            if (timeSpan <= TimeSpan.Zero)
+                return BadRequest(new {message = "TimeSpan must be set to a positive value"});
+
+            device.TimeTaken = timeSpan;
+            device = _userDeviceRepository.UpdateUserDevice(device);
+
+            return Ok(device);
+        }
     }
 }

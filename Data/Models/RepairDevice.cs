@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Linq;
 
 namespace RepairConsole.Data.Models
 {
@@ -20,6 +22,18 @@ namespace RepairConsole.Data.Models
         [NotMapped]
         public ICollection<Link> Links { get; set; }
 
-        public bool ShouldSerializeUserDevices() => false;
+        [NotMapped]
+        public TimeSpan? AverageTimeTaken { get; set; }
+
+        public bool ShouldSerializeUserDevices()
+        {
+            if (UserDevices == null)
+                return false;
+
+            if (UserDevices.Count > 0 && UserDevices.ToList()[0].RepairDevice != null)
+                return false;
+
+            return true;
+        }
     }
 }

@@ -28,7 +28,7 @@ namespace RepairConsole.Services
             directory ??= string.Empty;
 
             var path = $"{directory}/{file}";
-            var stream = new FileStream(path, FileMode.Create);
+            var stream = new FileStream(path, FileMode.Open);
 
             return stream;
         }
