@@ -56,7 +56,7 @@ namespace RepairConsole.Data.Models
         {
             _repairContext.Entry(userDevice).State = EntityState.Detached;
             var device = _repairContext.UserDevices.Attach(userDevice);
-            device.State = EntityState.Modified;
+            _repairContext.Entry(userDevice).State = EntityState.Modified;
             _repairContext.SaveChanges();
 
             return userDevice;

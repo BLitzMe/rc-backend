@@ -46,9 +46,28 @@ namespace RepairConsole.Data.Models
         {
             var devices = await _context.RepairDevices
                 .Include(dev => dev.Documents)
+                .Include(dev => dev.UserDevices)
                 .Include(dev => dev.Links)
                 .ThenInclude(link => link.Ratings)
                 .ToListAsync();
+
+            foreach (var device in devices)
+            {
+                device.AverageTimeTaken = TimeSpan.Zero;
+                device.UserDevices ??= new List<UserDevice>();
+                var num = 0;
+                foreach (var userDevice in device.UserDevices)
+                {
+                    if (!userDevice.TimeTaken.HasValue)
+                        continue;
+
+                    device.AverageTimeTaken += userDevice.TimeTaken;
+                    num++;
+                }
+
+                if (num > 0)
+                    device.AverageTimeTaken /= num;
+            }
 
             return devices;
         }

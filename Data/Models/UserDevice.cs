@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace RepairConsole.Data.Models
 {
@@ -26,9 +27,18 @@ namespace RepairConsole.Data.Models
 
         public DateTime? DeliveryDay { get; set; }
 
-        public TimeSpan? TimeTaken { get; set; }
+        [NotMapped]
+        public TimeSpan? TimeTaken
+        {
+            get => !TimeTakenTicks.HasValue ? (TimeSpan?) null : TimeSpan.FromTicks(TimeTakenTicks.Value);
+            set => TimeTakenTicks = value?.Ticks;
+        }
+
+        public long? TimeTakenTicks { get; set; }
 
         public int RepairDeviceId { get; set; }
         public RepairDevice RepairDevice { get; set; }
+
+        public bool ShouldSerializeTimeTakenTicks() => false;
     }
 }
