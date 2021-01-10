@@ -34,7 +34,7 @@ namespace RepairConsole
             {
                 configuration.RootPath = "ClientApp/build";
             });
-            
+
             services.AddCors(options =>
             {
                 options.AddPolicy("AllowAllOrigins",
@@ -68,11 +68,15 @@ namespace RepairConsole
                 app.UseHsts();
             }
 
-            app.UseCors("AllowAllOrigins");
-            
-            app.UseHttpsRedirection();
             app.UseStaticFiles();
+
+            app.UseCors(x => x
+                            .AllowAnyMethod()
+                            .AllowAnyHeader()
+                            .SetIsOriginAllowed(origin => true) // allow any origin
+                            .AllowCredentials()); // allow credentials
             app.UseSpaStaticFiles();
+
 
             app.UseRouting();
 
