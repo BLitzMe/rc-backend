@@ -75,7 +75,7 @@ namespace RepairConsole
                             .AllowAnyHeader()
                             .SetIsOriginAllowed(origin => true) // allow any origin
                             .AllowCredentials()); // allow credentials
-                                                  //dummy data 
+                                                  //dummy data j
             app.UseSpaStaticFiles();
 
 
