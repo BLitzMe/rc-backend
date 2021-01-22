@@ -19,6 +19,7 @@ namespace RepairConsole.Data.Models
         {
             var device = await _context.RepairDevices
                 .Include(dev => dev.UserDevices)
+                .ThenInclude(userDev => userDev.Durations)
                 .Include(dev => dev.Documents)
                 .Include(dev => dev.Links)
                 .ThenInclude(link => link.Ratings)
@@ -29,10 +30,11 @@ namespace RepairConsole.Data.Models
             var num = 0;
             foreach (var userDevice in device.UserDevices)
             {
-                if (!userDevice.TimeTaken.HasValue)
+                if (!userDevice.Durations.Any())
                     continue;
 
-                device.AverageTimeTaken += userDevice.TimeTaken;
+                var ticksTaken = userDevice.Durations.Select(d => d.TimeTakenTicks).Where(l => l.HasValue).Sum(l => l.Value);
+                device.AverageTimeTaken += TimeSpan.FromTicks(ticksTaken);
                 num++;
             }
 
@@ -58,10 +60,11 @@ namespace RepairConsole.Data.Models
                 var num = 0;
                 foreach (var userDevice in device.UserDevices)
                 {
-                    if (!userDevice.TimeTaken.HasValue)
+                    if (!userDevice.Durations.Any())
                         continue;
 
-                    device.AverageTimeTaken += userDevice.TimeTaken;
+                    var ticksTaken = userDevice.Durations.Select(d => d.TimeTakenTicks).Where(l => l.HasValue).Sum(l => l.Value);
+                    device.AverageTimeTaken += TimeSpan.FromTicks(ticksTaken);
                     num++;
                 }
 

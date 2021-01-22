@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace RepairConsole.Data.Models
 {
@@ -9,5 +10,6 @@ namespace RepairConsole.Data.Models
         UserDevice AddUserDevice(UserDevice userDevice);
         UserDevice UpdateUserDevice(UserDevice userDevice);
         UserDevice DeleteUserDevice(int id);
+        Task<WorkDuration> AddOrUpdateWorkDurationAsync(WorkDuration duration);
     }
 }

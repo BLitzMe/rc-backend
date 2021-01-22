@@ -30,10 +30,7 @@ namespace RepairConsole.Data.Models
             if (UserDevices == null)
                 return false;
 
-            if (UserDevices.Count > 0 && UserDevices.ToList()[0].RepairDevice != null)
-                return false;
-
-            return true;
+            return UserDevices.Count <= 0 || UserDevices.ToList()[0].RepairDevice == null;
         }
     }
 }
