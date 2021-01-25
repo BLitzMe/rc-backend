@@ -97,7 +97,7 @@ namespace RepairConsole.Controllers
         }
 
         [HttpPatch("{userDeviceId}/setTimeTaken")]
-        public IActionResult SetTimeTaken([FromRoute] int userDeviceId, [FromQuery] TimeSpan timeSpan)
+        public async Task<IActionResult> SetTimeTaken([FromRoute] int userDeviceId, [FromQuery] TimeSpan timeSpan, [FromQuery] DurationType type)
         {
             var device = _userDeviceRepository.GetAllUserDevices()
                 .FirstOrDefault(d => d.Id == userDeviceId);
@@ -107,8 +107,14 @@ namespace RepairConsole.Controllers
             if (timeSpan <= TimeSpan.Zero)
                 return BadRequest(new {message = "TimeSpan must be set to a positive value"});
 
-            device.TimeTaken = timeSpan;
-            device = _userDeviceRepository.UpdateUserDevice(device);
+            var duration = new WorkDuration
+            {
+                Device = device,
+                UserDeviceId = userDeviceId,
+                TimeTaken = timeSpan,
+                Type = type,
+            };
+            duration = await _userDeviceRepository.AddOrUpdateWorkDurationAsync(duration);
 
             return Ok(device);
         }

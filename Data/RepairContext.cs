@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RepairConsole.Data.Models;
 
 namespace RepairConsole.Data
@@ -9,10 +10,10 @@ namespace RepairConsole.Data
         public DbSet<RepairDevice> RepairDevices { get; set; }
         public DbSet<RepairDocument> RepairDocuments { get; set; }
         public DbSet<Link> Links { get; set; }
-
         public DbSet<Rating> Ratings { get; set; }
         public DbSet<LinkRating> LinkRatings { get; set; }
         public DbSet<DocumentRating> DocumentRatings { get; set; }
+        public DbSet<WorkDuration> WorkDurations { get; set; }
 
         public RepairContext(DbContextOptions<RepairContext> options) : base(options)
         {
@@ -20,6 +21,8 @@ namespace RepairConsole.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            var durationConverter = new EnumToStringConverter<DurationType>();
+
             modelBuilder.Entity<UserDevice>()
                 .HasOne(u => u.RepairDevice)
                 .WithMany(r => r.UserDevices)
@@ -39,6 +42,15 @@ namespace RepairConsole.Data
                 .HasOne(rating => rating.Link)
                 .WithMany(link => link.Ratings)
                 .HasForeignKey(rating => rating.LinkId);
+
+            modelBuilder.Entity<WorkDuration>()
+                .Property(w => w.Type)
+                .HasConversion(durationConverter);
+
+            modelBuilder.Entity<WorkDuration>()
+                .HasOne(w => w.Device)
+                .WithMany(ud => ud.Durations)
+                .HasForeignKey(w => w.UserDeviceId);
 
             base.OnModelCreating(modelBuilder);
         }

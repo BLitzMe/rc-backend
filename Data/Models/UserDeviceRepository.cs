@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 
 namespace RepairConsole.Data.Models
@@ -72,6 +73,37 @@ namespace RepairConsole.Data.Models
             }
 
             return device;
+        }
+
+        public async Task<WorkDuration> AddOrUpdateWorkDurationAsync(WorkDuration duration)
+        {
+            var device = await _repairContext.UserDevices
+                .Include(u => u.Durations)
+                .FirstOrDefaultAsync(u => u.Id == duration.UserDeviceId);
+            if (device == null)
+                return null;
+
+            WorkDuration newDuration = null;
+            if (device.Durations != null && device.Durations.Any())
+                newDuration = device.Durations.FirstOrDefault(d => d.Type == duration.Type);
+
+            if (newDuration != null)
+            {
+                _repairContext.Entry(newDuration).State = EntityState.Detached;
+                newDuration.UserDeviceId = duration.UserDeviceId;
+                newDuration.Device = duration.Device;
+                newDuration.TimeTaken = duration.TimeTaken;
+                newDuration.Type = duration.Type;
+                _repairContext.Entry(newDuration).State = EntityState.Modified;
+            }
+            else
+            {
+                newDuration = duration;
+                await _repairContext.AddAsync(newDuration);
+            }
+
+            await _repairContext.SaveChangesAsync();
+            return newDuration;
         }
     }
 }
